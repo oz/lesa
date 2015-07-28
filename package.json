@@ -1,0 +1,16 @@
+{
+  "name": "lesa",
+  "version": "0.0.1",
+  "description": "Terminal news reader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "oz@cypr.io",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "blessed": "^0.1.15",
+    "feedly": "^0.1.2",
+    "lodash": "^3.10.0"
+  }
+}
