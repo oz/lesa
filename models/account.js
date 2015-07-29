@@ -1,5 +1,6 @@
-var Feedly = require('feedly'),
-    _      = require('lodash')
+var Feedly       = require('feedly'),
+    _            = require('lodash'),
+    EventEmitter = require('events').EventEmitter
 
 
 DEBUG_URL              = 'https://sandbox.feedly.com'
@@ -26,6 +27,7 @@ var Account = function Account(opts) {
     client_secret: this.secret,
   })
 }
+Account.prototype = new EventEmitter()
 
 // FIXME - Do not expose Feedly interface directly.
 //       - Use promises or ... continuation style ?

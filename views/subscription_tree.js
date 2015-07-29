@@ -1,12 +1,12 @@
-var _       = require('lodash'),
-    blessed = require('blessed')
+var _            = require('lodash'),
+    blessed      = require('blessed'),
+    EventEmitter = require('events').EventEmitter
 
 var SubscriptionTree = function SubscriptionTree(opts) {
+  if (opts === void 0) opts = {}
+
   this.label = opts.label || 'Subscriptions'
   this.items = opts.items || []
-
-  // FIXME use events to redraw screen upstream.
-  this.screen = opts.screen
 
   this.component = blessed.list({
     label:  this.label,
@@ -25,10 +25,10 @@ var SubscriptionTree = function SubscriptionTree(opts) {
     }
   })
   this.component.select(0)
-
   this.setupKeyboardEvents()
   this.setupListEvents()
 }
+SubscriptionTree.prototype = new EventEmitter()
 
 SubscriptionTree.prototype.clear = function() {
   this.component.clearItems()
@@ -52,10 +52,10 @@ SubscriptionTree.prototype.setupKeyboardEvents = function() {
   this.component.on('keypress', function(ch, key) {
     if (key.name === 'up' || key.name === 'k') {
       self.component.up()
-      self.screen.render()
+      self.emit('update')
     } else if (key.name === 'down' || key.name === 'j') {
       self.component.down()
-      self.screen.render()
+      self.emit('update')
     }
   })
 
@@ -65,10 +65,9 @@ SubscriptionTree.prototype.setupKeyboardEvents = function() {
 SubscriptionTree.prototype.setupListEvents = function() {
   var self = this
 
-  // Update screen when a list item is selected.
-  this.component.on('select', function(item, select) {
-    //self.component.setLabel(' ' + item.getText() + ' ');
-    self.screen.render()
+  // Refresh screen when a list item is selected.
+  this.component.on('select', function(_item, _select) {
+    return self.emit('update');
   })
 
   return this;

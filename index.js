@@ -1,16 +1,18 @@
 var blessed = require('blessed'),
     _       = require('lodash')
 
-var Subscriptions = require('./models/subscription').Subscriptions,
-    Account       = require('./models/account'),
-    SubscriptionTree = require('./views/subscription_tree')
-
+var Account        = require('./models/account'),
+    MainController = require('./controllers/main_controller')
 
 // Use sandbox feedly because tokens can't be public w/ Feedly... :/
 process.env['DEBUG'] = '1'
 
-var MainController = function MainController() {
-  // Create a screen object.
+var App = function App() {
+  this.program = blessed.program()
+
+  // Create a screen object
+  // XXX I'll probably need more that one. Need to check how blessed handles
+  //     this... :)
   this.screen = blessed.screen({
     autoPadding: true,
     smartCSR:    true,
@@ -18,42 +20,44 @@ var MainController = function MainController() {
   })
   this.screen.title = 'Lesa'
 
-  // Quit on Escape, q, or Control-C.
-  this.screen.key(['escape', 'q', 'C-c'], function(ch, key) {
-    return process.exit(0);
-  })
-
-  // Render the screen.
+  // Quit on q, or Control-C.
+  this.screen.key(['q', 'C-c'], _.bind(this.quit, this));
   this.screen.render()
 }
 
-MainController.prototype.index = function() {
-  var self = this
-  var v = new SubscriptionTree({
-    screen: this.screen
-  })
-
-  var account = new Account({
-    client_id:     'sandbox',
-    client_secret: 'YNXZHOH3GPYO6DF7B43K',
-  })
-
-  account.subscriptions().then(function(rawSubs) {
-    var subs = new Subscriptions(rawSubs)
-        tree = subs.tree()
-
-    _.each(_.keys(tree), function(catId) {
-      v.push(tree[catId].name)
+App.prototype.account = function account() {
+  if (this.__account === void 0) {
+    this.__account = new Account({
+      client_id:     'sandbox',
+      client_secret: 'YNXZHOH3GPYO6DF7B43K',
     })
-    self.screen.append(v.component)
-    v.focus()
-    self.screen.render()
-  },
-  function (error) {
-    console.log(error)
-    process.exit(1)
-  });
+  }
+
+  return this.__account;
 }
 
-var ctl = new MainController()
-ctl.index()
+App.prototype.resetTerm = function resetTerm() {
+  this.program.clear();
+  this.program.disableMouse();
+  this.program.showCursor();
+  this.program.normalBuffer();
+}
+
+App.prototype.quit = function quit() {
+  this.resetTerm()
+  process.exit(0)
+}
+
+App.prototype.die = function die(err) {
+  this.resetTerm()
+  console.error(err)
+  process.exit(1)
+}
+
+App.prototype.run = function run() {
+  var c = new MainController(this)
+  c.index()
+}
+
+var app = new App()
+app.run()
