@@ -25,7 +25,6 @@ var App = function App(opts) {
 
   // Quit on q, or Control-C.
   this.screen.key(['q', 'C-c'], _.bind(this.quit, this));
-  this.screen.render()
 }
 
 App.prototype.account = function account() {
@@ -52,8 +51,13 @@ App.prototype.quit = function quit() {
 
 App.prototype.die = function die(err) {
   this.resetTerm()
-  this.program.log(err)
+  this.log(err)
   process.exit(1)
+}
+
+App.prototype.log = function log(msg) {
+  this.program.log(msg)
+  return this;
 }
 
 App.prototype.run = function run() {

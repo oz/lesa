@@ -71,6 +71,8 @@ SubscriptionTree.prototype.setupKeyboardEvents = function() {
     } else if (key.name === 'down' || key.name === 'j') {
       self.component.down()
       self.emit('update')
+    } else if (key.name === 'tab') {
+      // XXX Switch to slave item-list view.
     }
   })
 
