@@ -1,9 +1,11 @@
-var _            = require('lodash'),
-    blessed      = require('blessed'),
-    EventEmitter = require('events').EventEmitter
+var _        = require('lodash'),
+    blessed  = require('blessed'),
+    events   = require('events'),
+    util     = require('util')
 
 var SubscriptionTree = function SubscriptionTree(opts) {
   if (opts === void 0) opts = {}
+  events.EventEmitter.call(this)
 
   this.label = opts.label || 'Subscriptions'
   this.items = opts.items || []
@@ -25,14 +27,26 @@ var SubscriptionTree = function SubscriptionTree(opts) {
     }
   })
   this.component.select(0)
-  this.setupKeyboardEvents()
-  this.setupListEvents()
+  this.setupKeyboardEvents().setupListEvents()
 }
-SubscriptionTree.prototype = new EventEmitter()
+util.inherits(SubscriptionTree, events.EventEmitter)
 
 SubscriptionTree.prototype.clear = function() {
   this.component.clearItems()
   return this;
+}
+
+// @param {Subscriptions} subs
+SubscriptionTree.prototype.set = function(subs) {
+  var tree = subs.tree(),
+      self = this
+  _.each(_.keys(tree), function(catId) {
+    var cat = tree[catId]
+    self.push(cat.name)
+    _.each(cat.feeds, function(feed) {
+      self.push("  " + feed.name)
+    })
+  })
 }
 
 SubscriptionTree.prototype.push = function(item) {
@@ -40,8 +54,9 @@ SubscriptionTree.prototype.push = function(item) {
   return this;
 }
 
-SubscriptionTree.prototype.focus = function() {
+SubscriptionTree.prototype.focus = function(triggerUpdate) {
   this.component.focus()
+  if (triggerUpdate) this.emit('update')
   return this;
 }
 

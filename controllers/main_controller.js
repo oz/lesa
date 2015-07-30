@@ -1,4 +1,5 @@
-var SubscriptionTree = require('../views/subscription_tree'),
+var _                = require('lodash'),
+    SubscriptionTree = require('../views/subscription_tree'),
     Subscriptions    = require('../models/subscription').Subscriptions
 
 var MainController = function MainController(app) {
@@ -6,23 +7,17 @@ var MainController = function MainController(app) {
 }
 
 MainController.prototype.index = function() {
-  var app = this.app
-      v   = new SubscriptionTree()
+  var app  = this.app,
+      tree = new SubscriptionTree()
 
-  v.on('update', function() { app.screen.render() })
-
+  tree.on('update', function() { app.screen.render() })
+  app.screen.append(tree.component)
   app.account().subscriptions().then(function(rawSubs) {
     var subs = new Subscriptions(rawSubs)
-        tree = subs.tree()
-
-    _.each(_.keys(tree), function(catId) {
-      v.push(tree[catId].name)
-    })
-    app.screen.append(v.component)
-    v.focus()
-    app.screen.render()
+    tree.set(subs)
+    tree.focus(true) // Set focus & redraw.
   },
-  function (err) { return app.die(err); }
+  _.bind(app.die, app)
   )
 }
 

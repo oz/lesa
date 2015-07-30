@@ -1,18 +1,21 @@
-var blessed = require('blessed'),
-    _       = require('lodash')
-
-var Account        = require('./models/account'),
+var blessed        = require('blessed'),
+    _              = require('lodash'),
+    Account        = require('./models/account'),
     MainController = require('./controllers/main_controller')
 
 // Use sandbox feedly because tokens can't be public w/ Feedly... :/
 process.env['DEBUG'] = '1'
 
-var App = function App() {
-  this.program = blessed.program()
+var App = function App(opts) {
+  if (opts === void 0) opts = {}
+  if (process.env['DEBUG']) {
+    _.defaults(opts, {
+      log: "./lesa.log"
+    })
+  }
 
-  // Create a screen object
-  // XXX I'll probably need more that one. Need to check how blessed handles
-  //     this... :)
+  this.program = blessed.program(opts)
+  // XXX Check if I can have >1 blessed.screen per progam.
   this.screen = blessed.screen({
     autoPadding: true,
     smartCSR:    true,
@@ -32,7 +35,6 @@ App.prototype.account = function account() {
       client_secret: 'YNXZHOH3GPYO6DF7B43K',
     })
   }
-
   return this.__account;
 }
 
@@ -50,7 +52,7 @@ App.prototype.quit = function quit() {
 
 App.prototype.die = function die(err) {
   this.resetTerm()
-  console.error(err)
+  this.program.log(err)
   process.exit(1)
 }
 
