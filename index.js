@@ -42,6 +42,7 @@ App.prototype.resetTerm = function resetTerm() {
   this.program.disableMouse();
   this.program.showCursor();
   this.program.normalBuffer();
+  return this;
 }
 
 App.prototype.quit = function quit() {
@@ -50,8 +51,9 @@ App.prototype.quit = function quit() {
 }
 
 App.prototype.die = function die(err) {
-  this.resetTerm()
-  this.log(err)
+  this
+    .resetTerm()
+    .log(err)
   process.exit(1)
 }
 
