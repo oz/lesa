@@ -2,11 +2,11 @@ var _                = require('lodash'),
     SubscriptionTree = require('../views/subscription_tree'),
     Subscriptions    = require('../models/subscription').Subscriptions
 
-var MainController = function MainController(app) {
+var MainScreen = function MainScreen(app) {
   this.app = app
 }
 
-MainController.prototype.index = function() {
+MainScreen.prototype.index = function() {
   var app  = this.app,
       tree = new SubscriptionTree()
 
@@ -21,4 +21,4 @@ MainController.prototype.index = function() {
   )
 }
 
-module.exports = MainController
+module.exports = MainScreen

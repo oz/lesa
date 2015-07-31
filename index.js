@@ -1,7 +1,7 @@
-var blessed        = require('blessed'),
-    _              = require('lodash'),
-    Account        = require('./models/account'),
-    MainController = require('./controllers/main_controller')
+var blessed    = require('blessed'),
+    _          = require('lodash'),
+    Account    = require('./models/account'),
+    MainScreen = require('./screens/main_screen')
 
 // Use sandbox feedly because tokens can't be public w/ Feedly... :/
 process.env['DEBUG'] = '1'
@@ -63,7 +63,7 @@ App.prototype.log = function log(msg) {
 }
 
 App.prototype.run = function run() {
-  var c = new MainController(this)
+  var c = new MainScreen(this)
   c.index()
 }
 
