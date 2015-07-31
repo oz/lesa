@@ -1,12 +1,13 @@
 var blessed = require('blessed')
 
-var TopStatusBar = function TopStatusBar() {
+var StatusBar = function StatusBar() {
   this.component = blessed.text({
-    content: 'Lesa',
+    content: 'Status bar',
     align: 'left',
-    top: 'top',
+    top: 'bottom',
     left: 'left',
     width: '100%',
+    height: '1',
     style: {
       bg: 'blue',
       fg: 'white',
