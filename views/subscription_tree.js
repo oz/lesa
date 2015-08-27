@@ -31,12 +31,14 @@ var SubscriptionTree = function SubscriptionTree(opts) {
 }
 util.inherits(SubscriptionTree, events.EventEmitter)
 
+// Clear list items.
 SubscriptionTree.prototype.clear = function() {
   this.component.clearItems()
   return this;
 }
 
-// @param {Subscriptions} subs
+// Set list items.
+// @param {Subscriptions} Subscription collection
 SubscriptionTree.prototype.set = function(subs) {
   var tree = subs.tree(),
       self = this

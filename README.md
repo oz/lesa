@@ -1,17 +1,15 @@
 # Lesa
 
-Lesa is an experimental node.js project to build yet another feed reader for
+Lesa is an experimental node.js project to build yet another feed reader, for
 the terminal. At the moment, this is mainly a Feedly client because this is
-what I use daily, but the program should be able to synchronize with more
-sources, or even no sources at all mind you.
+what I use daily, but a decent program should be able to synchronize with more
+sources (or even no sources at all mind you).
 
-It is build on top of node.js, because [blessed][blessed] is less painful than
-curses or the other [termbox][termbox] things, and Javascript is actually OK
-without a browser.
+It is built on node.js, because [blessed][blessed] is less painful than curses
+or the other [termbox][termbox] things, and I felt like writing some JS during
+lunch breaks.
 
 Lesa is icelandish for *read*.
-
-Install with `npm i lesa`.
 
 [blessed]: https://github.com/chjj/blessed
 [termbox]: https://github.com/nsf/termbox
