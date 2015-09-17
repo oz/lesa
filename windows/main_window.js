@@ -8,7 +8,6 @@ var _                = require('lodash'),
     Subscriptions    = require('../models/subscription').Subscriptions
 
 class MainWindow extends events.EventEmitter {
-
   constructor(app) {
     super()
     this.app       = app

@@ -22,7 +22,7 @@ class SubscriptionTree extends events.EventEmitter {
       height: '100%',
       style:  {
         fg: 'white',
-        bg: 'black',
+        bg: 'transparent',
         selected: {
           bg: 'white',
           fg: 'black'

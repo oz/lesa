@@ -9,8 +9,8 @@
   "author": "oz@cypr.io",
   "license": "GPL-3.0",
   "dependencies": {
-    "blessed": "^0.1.15",
-    "feedly": "^0.1.2",
-    "lodash": "^3.10.0"
+    "blessed": "~0.1",
+    "feedly": "~0.1",
+    "lodash": "~3.x"
   }
 }
