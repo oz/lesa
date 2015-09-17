@@ -1,15 +1,17 @@
-var _        = require('lodash')
-    Category = require("./category")
+"use strict";
 
-var Subscription = function Subscription (opts) {
-  this.opts = opts
-  this.name = opts.title
-  this.url  = opts.website
-  this.id   = opts.id
+var _        = require('lodash'),
+    Category = require('./category')
 
-  this.categories = _.map(opts.categories, function (rawCat) {
-    return new Category(rawCat)
-  })
+class Subscription {
+  constructor(opts) {
+    this.opts = opts
+    this.name = opts.title
+    this.url  = opts.website
+    this.id   = opts.id
+
+    this.categories = _.map(opts.categories, (cat) => new Category(cat))
+  }
 }
 
 // Subscription collection.
@@ -28,36 +30,36 @@ var Subscription = function Subscription (opts) {
 //     coverUrl: 'http://storage.googleapis.com/site-assets/Xne8uW_IUiZhV1EuO2ZMzIrc2Ak6NlhGjboZ-Yk0rJ8_cover-148574dcfbb',
 //     coverColor: '149500' },
 //  ...
-var Subscriptions = function Subscriptions(subs) {
-  this.collection = []
+class Subscriptions {
+  constructor(subs) {
+    this.collection = []
 
-  _.each(subs, function(sub) {
-    this.collection.push(new Subscription(sub))
-  }, this)
-}
+    _.each(subs, (sub) => this.collection.push(new Subscription(sub)))
+  }
 
-Subscriptions.prototype.length = function length() {
-  return this.collection.length;
-}
+  length() {
+    return this.collection.length;
+  }
 
-Subscriptions.prototype.each = function each(cb) {
-  return _.each(this.collection, cb, this);
-}
+  each(cb) {
+    return _.each(this.collection, cb, this);
+  }
 
-Subscriptions.prototype.tree = function tree() {
-  var tree = {}
+  tree() {
+    var tree = {}
 
-  this.each(function(sub) {
-    _.each(sub.categories, function(cat) {
-      if (!tree[cat.id]) {
-        tree[cat.id] = { name: cat.name, feeds: [] }
-      }
+    this.each(function(sub) {
+      _.each(sub.categories, function(cat) {
+        if (!tree[cat.id]) {
+          tree[cat.id] = { name: cat.name, feeds: [] }
+        }
 
-      tree[cat.id].feeds.push(sub)
+        tree[cat.id].feeds.push(sub)
+      })
     })
-  })
 
-  return tree;
+    return tree;
+  }
 }
 
 module.exports = {

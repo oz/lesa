@@ -1,3 +1,5 @@
+"use strict";
+
 var _                = require('lodash'),
     blessed          = require('blessed'),
     events           = require('events'),
@@ -5,53 +7,52 @@ var _                = require('lodash'),
     SubscriptionTree = require('../views/subscription_tree'),
     Subscriptions    = require('../models/subscription').Subscriptions
 
-var MainWindow = function MainWindow(app) {
-  events.EventEmitter.call(this)
+class MainWindow extends events.EventEmitter {
 
-  this.app       = app
-  this.component = this.initializeComponent()
-  this.tree      = this.initializeTreePane()
+  constructor(app) {
+    super()
+    this.app       = app
+    this.component = this.initializeComponent()
+    this.tree      = this.initializeTreePane()
 
-  this.component.append(this.tree.component)
-  //app.screen.append(this.component)
-}
-util.inherits(MainWindow, events.EventEmitter)
+    this.component.append(this.tree.component)
+    //app.screen.append(this.component)
+  }
 
-MainWindow.prototype.initializeTreePane = function initializeTreePane() {
-  var tree = new SubscriptionTree()
-  tree.on('update', _.bind(function() {
-    this.emit('update')
-  }, this))
-  return tree;
-}
+  initializeComponent() {
+    var box = blessed.box({
+      top: 'top',
+      left: 'left',
+      align: 'left',
+      width: '100%',
+      height: '100%'
+    })
+    return box;
+  }
 
-MainWindow.prototype.initializeComponent = function() {
-  var box = blessed.box({
-    top: 'top',
-    left: 'left',
-    align: 'left',
-    width: '100%',
-    height: '100%'
-  })
-  return box;
-}
+  initializeTreePane() {
+    var tree = new SubscriptionTree()
+    tree.on('update', () => this.emit('update'))
+    return tree;
+  }
 
-MainWindow.prototype.index = function() {
-  var tree = this.tree
+  index() {
+    var tree = this.tree
 
-  this.app.log("[main] index")
-  this.app.account().subscriptions().then(function(rawSubs) {
-    var subs = new Subscriptions(rawSubs)
-    tree.set(subs)
-    tree.focus(true) // Set focus & redraw.
-  },
-  _.bind(this.app.die, this.app)
-  )
-}
+    this.app.log("[main] index")
+    this.app.account().subscriptions().then(function(rawSubs) {
+      var subs = new Subscriptions(rawSubs)
+      tree.set(subs)
+      tree.focus(true) // Set focus & redraw.
+    },
+    _.bind(this.app.die, this.app)
+    )
+  }
 
-MainWindow.prototype.showAndFocus = function() {
-  this.component.show()
-  this.tree.focus()
+  showAndFocus() {
+    this.component.show()
+    this.tree.focus()
+  }
 }
 
 module.exports = MainWindow

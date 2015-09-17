@@ -31,11 +31,11 @@ App.prototype.initializeScreen = function() {
   screen.title = App.name
 
   // Quit on q, or Control-C.
-  screen.key(['q', 'C-c'], _.bind(this.quit, this));
+  screen.key(['q', 'C-c'], () => this.quit())
 
   // 1 show main window, 2 show article view, etc.
-  screen.key(['1'], _.bind(function() { this.switchTo('main') }, this))
-  screen.key(['2'], _.bind(function() { this.switchTo('article') }, this))
+  screen.key(['1'], () => this.switchTo('main'))
+  screen.key(['2'], () => this.switchTo('article'))
 
   return screen;
 }
@@ -102,9 +102,9 @@ App.prototype.hideWindow = function hideWindow(name) {
 
 // Hide all windows except the "name" window.
 App.prototype.switchTo = function switchTo(name) {
-  _.each(_.keys(this.windows), _.bind(function (wName) {
+  _.each(_.keys(this.windows), (wName) => {
     if (wName !== name) this.hideWindow(wName)
-  }, this))
+  })
   this.windows[name].showAndFocus()
   this.screen.render()
   return this;
