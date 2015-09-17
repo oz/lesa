@@ -21,8 +21,8 @@ class SubscriptionTree extends events.EventEmitter {
       width:  '30%',
       height: '100%',
       style:  {
-        fg: 'white',
         bg: 'transparent',
+        fg: 'white',
         selected: {
           bg: 'white',
           fg: 'black'
@@ -41,16 +41,16 @@ class SubscriptionTree extends events.EventEmitter {
 
   // Set list items.
   // @param {Subscriptions} Subscription collection
-  set(subs) {
-    var tree = subs.tree(),
-        self = this
-    _.each(_.keys(tree), function(catId) {
+  setSubscriptions(subs) {
+    var tree = this.subscriptionTree(subs)
+
+    _.each(_.keys(tree), (catId) => {
       var cat = tree[catId]
-      self.push(cat.name)
-      _.each(cat.feeds, function(feed) {
-        self.push("  " + feed.name)
-      })
+      this.push(cat.name)
+      _.each(cat.feeds, (feed) => this.push("  " + feed.name))
     })
+
+    return this;
   }
 
   push(item) {
@@ -65,16 +65,14 @@ class SubscriptionTree extends events.EventEmitter {
   }
 
   setupKeyboardEvents() {
-    var self = this
-
     // Use arrows and j/k to navigate our list, etc.
-    this.component.on('keypress', function(ch, key) {
+    this.component.on('keypress', (ch, key) => {
       if (key.name === 'up' || key.name === 'k') {
-        self.component.up()
-        self.emit('update')
+        this.component.up()
+        this.emit('update')
       } else if (key.name === 'down' || key.name === 'j') {
-        self.component.down()
-        self.emit('update')
+        this.component.down()
+        this.emit('update')
       } else if (key.name === 'tab') {
         // XXX Switch to slave item-list view.
       }
@@ -84,14 +82,27 @@ class SubscriptionTree extends events.EventEmitter {
   }
 
   setupListEvents() {
-    var self = this
-
     // Refresh screen when a list item is selected.
-    this.component.on('select', function(_item, _select) {
-      return self.emit('update');
-    })
+    this.component.on('select', (_item, _select) => this.emit('update'))
 
     return this;
+  }
+
+  // @param subs {Subscriptions} a collection of Subscription
+  // @return {Object} An object keyed by category ID, and where values
+  //                  contain the category name and its list of feeds.
+  subscriptionTree(subs) {
+    var tree = {}
+    subs.each(function(sub) {
+      _.each(sub.categories, function(cat) {
+        if (!tree[cat.id]) {
+          tree[cat.id] = { name: cat.name, feeds: [] }
+        }
+
+        tree[cat.id].feeds.push(sub)
+      })
+    })
+    return tree;
   }
 }
 

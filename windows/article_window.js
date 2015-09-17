@@ -17,11 +17,11 @@ class ArticleWindow extends events.EventEmitter {
   initializeComponent() {
     var box = blessed.text({
       content: "Article window",
-      top: 'top',
+      top: 'top+1',
       left: 'left',
       align: 'left',
       width: '100%',
-      height: '100%'
+      height: '100%-1'
     })
 
     return box;

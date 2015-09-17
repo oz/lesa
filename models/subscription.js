@@ -44,22 +44,6 @@ class Subscriptions {
   each(cb) {
     return _.each(this.collection, cb, this);
   }
-
-  tree() {
-    var tree = {}
-
-    this.each(function(sub) {
-      _.each(sub.categories, function(cat) {
-        if (!tree[cat.id]) {
-          tree[cat.id] = { name: cat.name, feeds: [] }
-        }
-
-        tree[cat.id].feeds.push(sub)
-      })
-    })
-
-    return tree;
-  }
 }
 
 module.exports = {

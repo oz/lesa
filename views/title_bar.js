@@ -2,12 +2,12 @@
 
 var blessed = require('blessed')
 
-module.exports = class StatusBar {
+module.exports = class TitleBar {
   constructor() {
     this.component = blessed.text({
-      content: 'Status bar',
+      content: 'Lesa',
       align: 'left',
-      bottom: 0,
+      top: 0,
       left: 'left',
       width: '100%',
       height: 1,

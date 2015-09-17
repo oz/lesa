@@ -4,7 +4,8 @@ var blessed    = require('blessed'),
     _          = require('lodash'),
     Account    = require('./models/account'),
     MainWindow = require('./windows/main_window'),
-    ArticleWindow = require('./windows/article_window')
+    ArticleWindow = require('./windows/article_window'),
+    DefaultLayout = require('./views/default_layout')
 
 // Use sandbox feedly because tokens can't be public w/ Feedly... :/
 process.env['DEBUG'] = '1'
@@ -19,7 +20,14 @@ class App {
     }
     this.program = blessed.program(opts)
     this.screen  = this.initializeScreen()
-    this.windows = this.initializeWindows(this.screen)
+    this.layout  = this.initializeLayout(this.screen)
+    this.windows = this.initializeWindows(this.layout)
+  }
+
+  initializeLayout(screen) {
+    var l = new DefaultLayout(screen)
+    l.render()
+    return l;
   }
 
   // Create a blessed.screen, and bind our global keys.
@@ -42,16 +50,16 @@ class App {
   }
 
   // Create all app's windows, and append them to the received parent Element.
-  initializeWindows(parent) {
+  initializeWindows(layout) {
     var windows = {
       article: new ArticleWindow(this),
       main:    new MainWindow(this)
     }
 
-    _.each(_.keys(windows), function(key) {
+    _.each(_.keys(windows), (key) => {
       var win = windows[key]
-      parent.append(win.component)
-      win.on('update', _.bind(parent.render, parent))
+      layout.component.append(win.component)
+      win.on('update', _.bind(layout.render, layout))
     })
 
     return windows;

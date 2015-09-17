@@ -15,18 +15,16 @@ class MainWindow extends events.EventEmitter {
     this.tree      = this.initializeTreePane()
 
     this.component.append(this.tree.component)
-    //app.screen.append(this.component)
   }
 
   initializeComponent() {
-    var box = blessed.box({
-      top: 'top',
+    return blessed.box({
+      top: 0,
       left: 'left',
       align: 'left',
       width: '100%',
       height: '100%'
     })
-    return box;
   }
 
   initializeTreePane() {
@@ -36,13 +34,11 @@ class MainWindow extends events.EventEmitter {
   }
 
   index() {
-    var tree = this.tree
-
     this.app.log("[main] index")
-    this.app.account().subscriptions().then(function(rawSubs) {
+    this.app.account().subscriptions().then((rawSubs) => {
       var subs = new Subscriptions(rawSubs)
-      tree.set(subs)
-      tree.focus(true) // Set focus & redraw.
+      this.tree.setSubscriptions(subs)
+      this.tree.focus(true) // Set focus & redraw.
     },
     _.bind(this.app.die, this.app)
     )
