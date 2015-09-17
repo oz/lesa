@@ -78,6 +78,7 @@ class App {
 
   quit() {
     this.resetTerm()
+    this.log(`Lesa quit at ${new Date()}`)
     process.exit(0)
   }
 
@@ -92,6 +93,7 @@ class App {
   }
 
   run() {
+    this.log(`Lesa started at ${new Date()}`)
     this.windows.main.index()
     return this;
   }
