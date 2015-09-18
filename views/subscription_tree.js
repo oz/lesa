@@ -7,10 +7,10 @@ var _        = require('lodash'),
 
 class SubscriptionTree extends events.EventEmitter {
   constructor(opts) {
-    if (opts === void 0) opts = {}
     super()
+    if (opts === void 0) opts = {}
 
-    this.label = opts.label || 'Subscriptions'
+    this.label = opts.label || 'Loading...'
     this.items = opts.items || []
 
     this.component = blessed.list({
@@ -29,8 +29,7 @@ class SubscriptionTree extends events.EventEmitter {
         }
       }
     })
-    this.component.select(0)
-    this.setupKeyboardEvents().setupListEvents()
+    this.setupKeyboardEvents()
   }
 
   // Clear list items.
@@ -50,6 +49,10 @@ class SubscriptionTree extends events.EventEmitter {
       _.each(cat.feeds, (feed) => this.push("  " + feed.name))
     })
 
+    // XXX Blessed won't render if we don't wiggle the selection here, and
+    //     simply calling render() has no effect.
+    this.component.down()
+    this.component.up()
     return this;
   }
 
@@ -60,7 +63,6 @@ class SubscriptionTree extends events.EventEmitter {
 
   focus(triggerUpdate) {
     this.component.focus()
-    if (triggerUpdate) this.emit('update')
     return this;
   }
 
@@ -69,21 +71,16 @@ class SubscriptionTree extends events.EventEmitter {
     this.component.on('keypress', (ch, key) => {
       if (key.name === 'up' || key.name === 'k') {
         this.component.up()
-        this.emit('update')
+        // FIXME emit "select" with selected feed/cat ID
+        this.emit('select')
       } else if (key.name === 'down' || key.name === 'j') {
         this.component.down()
-        this.emit('update')
+        // FIXME emit "select" with selected feed/cat ID
+        this.emit('select')
       } else if (key.name === 'tab') {
         // XXX Switch to slave item-list view.
       }
     })
-
-    return this;
-  }
-
-  setupListEvents() {
-    // Refresh screen when a list item is selected.
-    this.component.on('select', (_item, _select) => this.emit('update'))
 
     return this;
   }

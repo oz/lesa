@@ -5,7 +5,9 @@ var blessed = require('blessed'),
     TitleBar      = require('./title_bar')
 
 module.exports = class DefaultLayout {
-  constructor(screen) {
+  constructor(app, screen) {
+    this.screen = screen
+    this.app = app
     this.component = blessed.box({
       top: 1,
       left: 0,
@@ -18,9 +20,11 @@ module.exports = class DefaultLayout {
   }
 
   render() {
+    this.app.log("Render layout")
     this.statusBar().component.render()
     this.titleBar().component.render()
     this.component.render()
+    this.screen.render()
   }
 
   // @return {StatusBar}

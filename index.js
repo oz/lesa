@@ -22,11 +22,11 @@ class App {
     this.screen  = this.initializeScreen()
     this.layout  = this.initializeLayout(this.screen)
     this.windows = this.initializeWindows(this.layout)
+    this.screen.render()
   }
 
   initializeLayout(screen) {
-    var l = new DefaultLayout(screen)
-    l.render()
+    var l = new DefaultLayout(this, screen)
     return l;
   }
 
@@ -59,7 +59,7 @@ class App {
     _.each(_.keys(windows), (key) => {
       var win = windows[key]
       layout.component.append(win.component)
-      win.on('update', _.bind(layout.render, layout))
+      //win.on('update', _.bind(layout.render, layout))
     })
 
     return windows;

@@ -27,9 +27,16 @@ class MainWindow extends events.EventEmitter {
     })
   }
 
+  render() {
+    this.component.render()
+  }
+
   initializeTreePane() {
     var tree = new SubscriptionTree()
-    tree.on('update', () => this.emit('update'))
+    tree.on('select', (what) => {
+      this.app.log("Selected feed/category changed.")
+      // FIXME handle select event from tree... to update feed items list ?
+    })
     return tree;
   }
 
